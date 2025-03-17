@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:kuntur_pacha/screens/registro_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -13,22 +15,57 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
   String? _mensajeFlash;
 
-  void _iniciarSesion() {
-    String usuario = usuarioController.text;
+  Future<void> _iniciarSesion() async {
+    String correo = usuarioController.text;
     String contrasena = contrasenaController.text;
 
-    if (usuario.isEmpty || contrasena.isEmpty) {
+    if (correo.isEmpty || contrasena.isEmpty) {
       setState(() {
         _mensajeFlash = "Por favor, ingresa usuario y contraseña.";
       });
       return;
     }
 
-    print("Iniciando sesión con: $usuario - $contrasena");
+    final url = Uri.parse('http://127.0.0.1:8000/api/login/');
+    final body = jsonEncode({'correo': correo, 'contrasenia': contrasena});
 
-    setState(() {
-      _mensajeFlash = "Tu contraseña ha sido restablecida con éxito.";
-    });
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        // Inicio de sesión exitoso
+        final data = jsonDecode(response.body);
+        setState(() {
+          _mensajeFlash = "Inicio de sesión exitoso: ${data['usuario']}";
+        });
+        // Navegar a la pantalla principal
+        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      } else if (response.statusCode == 401) {
+        // Contraseña incorrecta
+        setState(() {
+          _mensajeFlash = "Contraseña incorrecta.";
+        });
+      } else if (response.statusCode == 404) {
+        // Usuario no encontrado
+        setState(() {
+          _mensajeFlash = "Usuario no encontrado.";
+        });
+      } else {
+        // Otro error
+        setState(() {
+          _mensajeFlash = "Error en el servidor.";
+        });
+      }
+    } catch (e) {
+      // Error de conexión
+      setState(() {
+        _mensajeFlash = "Error de conexión: $e";
+      });
+    }
   }
 
   @override
@@ -92,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.grey[100],
-                      labelText: "Usuario",
+                      labelText: "Correo Electronico",
                       prefixIcon: Icon(Icons.person),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
