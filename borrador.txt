@@ -4,6 +4,6 @@ primero abrimos pgadmin(opcional)
 	SELECT schemaname, tablename FROM pg_tables WHERE tablename = 'mi_app_usuario';
 luego abriomos e iniciamos el backend
 		python manage.py runserver
-luego abrimos el api server.py
+luego abrimos el api server.py (esto es para el registro de usuario con la verificacion de gmail)
 		python server.py
 luego iniciamos la app en flutter

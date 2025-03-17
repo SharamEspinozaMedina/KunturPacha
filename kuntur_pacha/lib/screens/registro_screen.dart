@@ -2,10 +2,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
+//import 'package:mailer/mailer.dart';
+//import 'package:mailer/smtp_server.dart';
 
 class RegistroScreen extends StatefulWidget {
+  const RegistroScreen({super.key});
+
   @override
   _RegistroScreenState createState() => _RegistroScreenState();
 }
@@ -170,7 +172,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
     if (captchaController.text != _captchaCode) {
       _mostrarMensaje('Código CAPTCHA incorrecto.');
       print(
-        'Código CAPTCHA incorrecto.${_captchaCode}  ${captchaController.text}',
+        'Código CAPTCHA incorrecto.$_captchaCode  ${captchaController.text}',
       );
       _generarCaptcha();
       return;
