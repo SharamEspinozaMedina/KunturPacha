@@ -1,10 +1,17 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:kuntur_pacha/main.dart';
+import 'package:kuntur_pacha/screens/RecuperarContrasenia_screen.dart';
 import 'package:kuntur_pacha/screens/registro_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class LoginScreen extends StatefulWidget {
+  final Function(String)
+  onLoginSuccess; // Función para manejar el éxito del login
+
+  LoginScreen({Key? key, required this.onLoginSuccess}) : super(key: key);
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -42,9 +49,20 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           _mensajeFlash = "Inicio de sesión exitoso: ${data['usuario']}";
         });
+
+        // Llamar a la función onLoginSuccess con el nombre del usuario
+        widget.onLoginSuccess(data['usuario']);
+
         // Navegar a la pantalla principal
-        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
-      } else if (response.statusCode == 401) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => PaginaPrincipal(
+                  usuario: data['usuario'],
+                ), // Reemplaza "MainScreen" con el nombre de tu pantalla principal
+          ),
+        );
         // Contraseña incorrecta
         setState(() {
           _mensajeFlash = "Contraseña incorrecta.";
@@ -129,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.grey[100],
-                      labelText: "Correo Electronico",
+                      labelText: "Correo Electrónico",
                       prefixIcon: Icon(Icons.person),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -186,7 +204,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   // Enlace de Recuperar Contraseña
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => RecuperarContrasenaScreen(
+                                onLoginSuccess: widget.onLoginSuccess,
+                              ),
+                        ),
+                      );
+                    },
                     child: Text(
                       "¿Olvidaste tu contraseña?",
                       style: TextStyle(color: Colors.blue),

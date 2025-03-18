@@ -11,6 +11,7 @@ class Usuario(models.Model):
     ], null=True, blank=True)
     pais = models.CharField(max_length=100)
     ciudad = models.CharField(max_length=100)
-
+    codigo_recuperacion = models.CharField(max_length=6, null=True, blank=True, unique=True)  # Nuevo campo
+    
     def __str__(self):
         return self.nombre  # Para ver el nombre en el admin de Django

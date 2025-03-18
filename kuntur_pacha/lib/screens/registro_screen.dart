@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:kuntur_pacha/main.dart';
 import 'dart:convert';
-//import 'package:mailer/mailer.dart';
-//import 'package:mailer/smtp_server.dart';
+import 'package:kuntur_pacha/screens/login_screen.dart';
 
 class RegistroScreen extends StatefulWidget {
   const RegistroScreen({super.key});
@@ -26,12 +26,200 @@ class _RegistroScreenState extends State<RegistroScreen> {
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
 
-  final List<String> paises = ['Bolivia', 'Argentina', 'Chile', 'Perú'];
+  final List<String> paises = [
+    'Bolivia',
+    'Argentina',
+    'Chile',
+    'Perú',
+    'Colombia',
+    'Ecuador',
+    'Brasil',
+    'Uruguay',
+    'Paraguay',
+    'Venezuela',
+    'México',
+    'Estados Unidos',
+    'Canadá',
+    'España',
+    'Francia',
+    'Alemania',
+    'Italia',
+    'Reino Unido',
+    'Portugal',
+    'China',
+    'Japón',
+    'India',
+    'Australia',
+    'Sudáfrica',
+    'Egipto',
+    'Nigeria',
+    'Rusia',
+    'Corea del Sur',
+    'Arabia Saudita',
+    'Turquía',
+  ];
+
   final Map<String, List<String>> ciudades = {
-    'Bolivia': ['La Paz', 'Cochabamba', 'Santa Cruz'],
-    'Argentina': ['Buenos Aires', 'Córdoba', 'Rosario'],
-    'Chile': ['Santiago', 'Valparaíso', 'Concepción'],
-    'Perú': ['Lima', 'Cusco', 'Arequipa'],
+    'Bolivia': [
+      'La Paz',
+      'Cochabamba',
+      'Santa Cruz',
+      'Sucre',
+      'Oruro',
+      'Potosí',
+      'Tarija',
+      'Trinidad',
+      'Cobija',
+    ],
+    'Argentina': [
+      'Buenos Aires',
+      'Córdoba',
+      'Rosario',
+      'Mendoza',
+      'La Plata',
+      'Mar del Plata',
+      'Tucumán',
+      'Salta',
+      'Santa Fe',
+    ],
+    'Chile': [
+      'Santiago',
+      'Valparaíso',
+      'Concepción',
+      'Antofagasta',
+      'Viña del Mar',
+      'Temuco',
+      'Rancagua',
+      'Iquique',
+      'Puerto Montt',
+    ],
+    'Perú': [
+      'Lima',
+      'Cusco',
+      'Arequipa',
+      'Trujillo',
+      'Chiclayo',
+      'Piura',
+      'Iquitos',
+      'Huancayo',
+      'Tacna',
+    ],
+    'Colombia': [
+      'Bogotá',
+      'Medellín',
+      'Cali',
+      'Barranquilla',
+      'Cartagena',
+      'Cúcuta',
+      'Bucaramanga',
+      'Santa Marta',
+      'Pereira',
+    ],
+    'Ecuador': [
+      'Quito',
+      'Guayaquil',
+      'Cuenca',
+      'Santo Domingo',
+      'Machala',
+      'Manta',
+      'Portoviejo',
+      'Ambato',
+      'Loja',
+    ],
+    'Brasil': [
+      'São Paulo',
+      'Rio de Janeiro',
+      'Brasília',
+      'Salvador',
+      'Fortaleza',
+      'Belo Horizonte',
+      'Manaus',
+      'Curitiba',
+      'Recife',
+    ],
+    'Uruguay': [
+      'Montevideo',
+      'Salto',
+      'Paysandú',
+      'Melo',
+      'Rivera',
+      'Maldonado',
+      'Tacuarembó',
+      'Minas',
+      'Durazno',
+    ],
+    'Paraguay': [
+      'Asunción',
+      'Ciudad del Este',
+      'San Lorenzo',
+      'Luque',
+      'Capiatá',
+      'Lambaré',
+      'Fernando de la Mora',
+      'Encarnación',
+      'Pedro Juan Caballero',
+    ],
+    'Venezuela': [
+      'Caracas',
+      'Maracaibo',
+      'Valencia',
+      'Barquisimeto',
+      'Ciudad Guayana',
+      'Maturín',
+      'Barcelona',
+      'Puerto La Cruz',
+      'San Cristóbal',
+    ],
+    'México': [
+      'Ciudad de México',
+      'Guadalajara',
+      'Monterrey',
+      'Puebla',
+      'Tijuana',
+    ],
+    'Estados Unidos': [
+      'Nueva York',
+      'Los Ángeles',
+      'Chicago',
+      'Houston',
+      'Miami',
+    ],
+    'Canadá': ['Toronto', 'Montreal', 'Vancouver', 'Ottawa', 'Calgary'],
+    'España': ['Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'Bilbao'],
+    'Francia': ['París', 'Marsella', 'Lyon', 'Toulouse', 'Niza'],
+    'Alemania': ['Berlín', 'Hamburgo', 'Múnich', 'Colonia', 'Fráncfort'],
+    'Italia': ['Roma', 'Milán', 'Nápoles', 'Turín', 'Palermo'],
+    'Reino Unido': [
+      'Londres',
+      'Mánchester',
+      'Birmingham',
+      'Glasgow',
+      'Liverpool',
+    ],
+    'Portugal': ['Lisboa', 'Oporto', 'Vila Nova de Gaia', 'Amadora', 'Braga'],
+    'China': ['Shanghái', 'Pekín', 'Cantón', 'Shenzhen', 'Hangzhou'],
+    'Japón': ['Tokio', 'Osaka', 'Kioto', 'Yokohama', 'Nagoya'],
+    'India': ['Bombay', 'Delhi', 'Bangalore', 'Calcuta', 'Chennai'],
+    'Australia': ['Sídney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaida'],
+    'Sudáfrica': [
+      'Ciudad del Cabo',
+      'Johannesburgo',
+      'Durban',
+      'Pretoria',
+      'Puerto Elizabeth',
+    ],
+    'Egipto': ['El Cairo', 'Alejandría', 'Guiza', 'Luxor', 'Asuán'],
+    'Nigeria': ['Lagos', 'Kano', 'Ibadán', 'Abuya', 'Benín'],
+    'Rusia': [
+      'Moscú',
+      'San Petersburgo',
+      'Novosibirsk',
+      'Ekaterimburgo',
+      'Kazán',
+    ],
+    'Corea del Sur': ['Seúl', 'Busán', 'Incheon', 'Daegu', 'Daejeon'],
+    'Arabia Saudita': ['Riad', 'Yeda', 'La Meca', 'Medina', 'Dammam'],
+    'Turquía': ['Estambul', 'Ankara', 'Esmirna', 'Bursa', 'Adana'],
   };
   String _captchaCode = ''; //a
   final TextEditingController codigoController = TextEditingController();
@@ -131,6 +319,16 @@ class _RegistroScreenState extends State<RegistroScreen> {
     });
   }
 
+  void _onLoginSuccess(String usuario) {
+    // Navegar a la pantalla principal y pasar el nombre del usuario
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaginaPrincipal(usuario: usuario),
+      ),
+    );
+  }
+
   void _registrarse() async {
     // Validación: Las contraseñas deben coincidir.
     if (passwordController.text != confirmPasswordController.text) {
@@ -203,6 +401,28 @@ class _RegistroScreenState extends State<RegistroScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Usuario registrado correctamente')),
         );
+
+        // Redirigir a LoginScreen después de 2 segundos (opcional)
+        Future.delayed(Duration(seconds: 2), () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => LoginScreen(
+                    onLoginSuccess: (usuario) {
+                      // Navegar a la pantalla principal después del inicio de sesión
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => PaginaPrincipal(usuario: usuario),
+                        ),
+                      );
+                    },
+                  ),
+            ),
+          );
+        });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error sharam: ${respuesta.body}')),
@@ -426,7 +646,16 @@ class _RegistroScreenState extends State<RegistroScreen> {
                 Center(
                   child: TextButton(
                     onPressed: () {
-                      // Navegar a la pantalla de inicio de sesión
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => LoginScreen(
+                                onLoginSuccess:
+                                    _onLoginSuccess, // Pasar la función _onLoginSuccess
+                              ),
+                        ),
+                      );
                     },
                     child: Text('¿Ya tienes cuenta? ¡Inicia sesión aquí!'),
                   ),
