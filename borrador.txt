@@ -7,3 +7,37 @@ luego abriomos e iniciamos el backend
 luego abrimos el api server.py (esto es para el registro de usuario con la verificacion de gmail)
 		python server.py
 luego iniciamos la app en flutter
+================================================================
+ para actualizar el git
+📌 Pasos para subir cambios a GitHub
+Abre tu terminal o Git Bash en la carpeta de tu proyecto.
+
+Verifica el estado de tu repositorio
+
+bash
+Copiar código
+git status
+Esto te mostrará los archivos modificados o nuevos que aún no han sido añadidos al control de versiones.
+
+Añade los archivos al área de preparación (staging area)
+Para añadir todos los archivos modificados:
+
+bash
+Copiar código
+git add .
+Si solo quieres añadir un archivo específico, usa:
+
+bash
+Copiar código
+git add nombre_del_archivo
+Realiza un commit con un mensaje descriptivo
+
+bash
+Copiar código
+git commit -m "Mensaje describiendo los cambios"
+Sube los cambios a GitHub
+
+bash
+Copiar código
+git push origin main
+⚠️ Si tu rama principal no se llama main, sino master u otra, usa el nombre correcto.

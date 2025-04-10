@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     final url = Uri.parse('http://127.0.0.1:8000/api/login/');
-    final body = jsonEncode({'correo': correo, 'contrasenia': contrasena});
+    final body = jsonEncode({'correo': correo, 'contrasena': contrasena});
 
     try {
       final response = await http.post(

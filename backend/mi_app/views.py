@@ -19,9 +19,9 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 def login(request):
     correo = request.data.get('correo')
-    contrasenia = request.data.get('contrasenia')
+    contrasena = request.data.get('contrasena')
 
-    if not correo or not contrasenia:
+    if not correo or not contrasena:
         return Response(
             {'error': 'Correo y contraseña son requeridos'},
             status=status.HTTP_400_BAD_REQUEST,
@@ -37,7 +37,7 @@ def login(request):
         )
 
     # Verificar la contraseña (aquí deberías usar un sistema de autenticación seguro)
-    if usuario.contrasenia == contrasenia:
+    if usuario.contrasena == contrasena:
         return Response(
             {'message': 'Inicio de sesión exitoso', 'usuario': usuario.nombre},
             status=status.HTTP_200_OK,
@@ -114,7 +114,7 @@ def restablecer_contrasenia(request):
             return JsonResponse({'error': 'Código duplicado en la base de datos'}, status=400)
 
         # Actualizar la contraseña
-        usuario.contrasenia = nueva_contrasena
+        usuario.contrasena = nueva_contrasena
         usuario.codigo_recuperacion = None  # Limpiar el código de recuperación
         usuario.save()
 
@@ -123,7 +123,7 @@ def restablecer_contrasenia(request):
         return JsonResponse({'error': 'Método no permitido'}, status=405)
 '''
 @csrf_exempt
-def restablecer_contrasenia(request):
+def restablecer_contrasena(request):
     if request.method == 'POST':
         codigo = request.POST.get('codigo')
         nueva_contrasena = request.POST.get('nueva_contrasena')
@@ -134,7 +134,7 @@ def restablecer_contrasenia(request):
             return JsonResponse({'error': 'Código inválido'}, status=400)
 
         # Actualizar la contraseña
-        usuario.contrasenia = nueva_contrasena
+        usuario.contrasena = nueva_contrasena
         usuario.codigo_recuperacion = None  # Limpiar el código de recuperación
         usuario.save()
 

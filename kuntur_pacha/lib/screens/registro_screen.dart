@@ -378,12 +378,12 @@ class _RegistroScreenState extends State<RegistroScreen> {
 
     // Construir la URL del endpoint de tu API.
     final url = Uri.parse('http://127.0.0.1:8000/api/usuarios/');
-
+    print('registro esta aca');
     // Crear el cuerpo (body) de la solicitud en formato JSON.
     final body = jsonEncode({
       "nombre": usuarioController.text,
       "correo": emailController.text,
-      "contrasenia": passwordController.text,
+      "contrasena": passwordController.text,
       "genero": _genero ?? "",
       "pais": _pais ?? "",
       "ciudad": _ciudad ?? "",
