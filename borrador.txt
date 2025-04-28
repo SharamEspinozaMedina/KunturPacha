@@ -1,4 +1,6 @@
 http://127.0.0.1:8000/api/usuarios/
+		l0lnovel0l@gmail.com
+		nave$11$
 primero abrimos pgadmin(opcional)
 	SELECT * FROM mi_app_usuario;
 	SELECT schemaname, tablename FROM pg_tables WHERE tablename = 'mi_app_usuario';
