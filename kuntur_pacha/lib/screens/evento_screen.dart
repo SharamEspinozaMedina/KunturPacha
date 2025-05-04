@@ -24,7 +24,7 @@ class EventosScreen extends StatefulWidget {
 }
 
 class _EventosScreenState extends State<EventosScreen> {
-  List<dynamic> eventos = [];
+  List<dynamic> eventos = []; // Lista para almacenar los eventos
   bool isLoading = true;
   int _selectedIndex = 1; // Aquí estamos en EVENTO (índice 1)
 
@@ -34,15 +34,24 @@ class _EventosScreenState extends State<EventosScreen> {
     _cargarEventos();
   }
 
-  Future<void> _cargarEventos() async {
+  Future<void> _cargarEventos({Map<String, dynamic>? filtros}) async {
     try {
-      final data = await EventoService.obtenerEventos();
+      setState(() => isLoading = true);
+
+      final data =
+          filtros == null || filtros.isEmpty
+              ? await EventoService.obtenerEventos()
+              : await EventoService.filtrarEventos(filtros);
+
       setState(() {
         eventos = data;
         isLoading = false;
       });
     } catch (e) {
-      print('Error cargando eventos: $e');
+      setState(() => isLoading = false);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error al cargar eventos: $e')));
     }
   }
 
@@ -83,6 +92,7 @@ class _EventosScreenState extends State<EventosScreen> {
           SizedBox(height: 10),
           FiltrosEventos(
             onFiltrar: (filtros) {
+              _cargarEventos(filtros: filtros);
               // Lógica para filtrar eventos
               print('Filtros aplicados: $filtros');
             },

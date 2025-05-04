@@ -1,12 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import UsuarioViewSet
+from .views import UsuarioViewSet, EventoViewSet
 from .views import login  # Importa la vista de login
 from .views import recuperar_contrasenia
 from .views import restablecer_contrasenia
 
 router = DefaultRouter()
 router.register(r'usuarios', UsuarioViewSet)  # Crea la ruta "/usuarios/"
+router.register(r'eventos', EventoViewSet, basename='evento')
 
 urlpatterns = [
     path('', include(router.urls)),  # Agrega todas las rutas de la API

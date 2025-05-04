@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from rest_framework import viewsets
-from .models import Usuario
-from .serializers import UsuarioSerializer
+from rest_framework import viewsets, filters
+from django_filters.rest_framework import DjangoFilterBackend
+from .models import Usuario, Evento
+from .serializers import UsuarioSerializer, EventoSerializer
 from django.contrib.auth import authenticate
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.mail import send_mail
@@ -121,24 +122,57 @@ def restablecer_contrasenia(request):
         return JsonResponse({'message': 'Contraseña restablecida con éxito'}, status=200)
     else:
         return JsonResponse({'error': 'Método no permitido'}, status=405)
-'''
-@csrf_exempt
-def restablecer_contrasena(request):
-    if request.method == 'POST':
-        codigo = request.POST.get('codigo')
-        nueva_contrasena = request.POST.get('nueva_contrasena')
 
-        try:
-            usuario = Usuario.objects.get(codigo_recuperacion=codigo)
-        except Usuario.DoesNotExist:
-            return JsonResponse({'error': 'Código inválido'}, status=400)
+class EventoViewSet(viewsets.ModelViewSet):
+    queryset = Evento.objects.all().prefetch_related(
+        'eventocultural',
+        'eventogastronomico',
+        'eventoacademico',
+        'eventodeportivo',
+        'cronograma_set'
+    )
+    serializer_class = EventoSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = {
+        'estado': ['exact'],
+        'fecha': ['gte', 'lte', 'exact'],
+        'ubicacion': ['exact', 'icontains'],
+    }
+    search_fields = ['nombre', 'descripcion']
+    ordering_fields = ['fecha', 'nombre']
 
-        # Actualizar la contraseña
-        usuario.contrasena = nueva_contrasena
-        usuario.codigo_recuperacion = None  # Limpiar el código de recuperación
-        usuario.save()
+    @action(detail=False, methods=['get'])
+    def filtrar(self, request):
+        queryset = self.get_queryset()
+        
+        # Filtro por tipo
+        tipo = request.query_params.get('tipo', None)
+        if tipo:
+            if tipo == 'Cultural':
+                queryset = queryset.filter(eventocultural__isnull=False)
+            elif tipo == 'Gastronómico':
+                queryset = queryset.filter(eventogastronomico__isnull=False)
+            elif tipo == 'Académico':
+                queryset = queryset.filter(eventoacademico__isnull=False)
+            elif tipo == 'Deportivo':
+                queryset = queryset.filter(eventodeportivo__isnull=False)
 
-        return JsonResponse({'message': 'Contraseña restablecida con éxito'}, status=200)
-    else:
-        return JsonResponse({'error': 'Método no permitido'}, status=405)   '
-        ' '''
+        # Filtro por año
+        año = request.query_params.get('año', None)
+        if año and año.isdigit():
+            queryset = queryset.filter(fecha__year=año)
+
+        # Ordenamiento
+        orden = request.query_params.get('orden', None)
+        if orden == 'recientes':
+            queryset = queryset.order_by('-fecha')
+        elif orden == 'nombre':
+            queryset = queryset.order_by('nombre')
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

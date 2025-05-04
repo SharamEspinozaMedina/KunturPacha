@@ -105,12 +105,34 @@ class _FiltrosEventosState extends State<FiltrosEventos> {
   }
 
   void _aplicarFiltros() {
-    widget.onFiltrar({
-      'genero': generoSeleccionado,
-      'año': anioSeleccionado,
-      'tipo': tipoSeleccionado,
-      'estado': estadoSeleccionado,
-      'orden': ordenSeleccionado,
-    });
+    final Map<String, dynamic> filtros = {};
+
+    if (generoSeleccionado != 'Todos') {
+      filtros['tipo'] = generoSeleccionado;
+    }
+
+    if (anioSeleccionado != 'Todos') {
+      filtros['año'] = anioSeleccionado;
+    }
+
+    if (tipoSeleccionado != 'Todos') {
+      filtros['modalidad'] = tipoSeleccionado; // Cambiado a 'modalidad'
+    }
+
+    if (estadoSeleccionado != 'Todos') {
+      filtros['estado'] =
+          estadoSeleccionado.toLowerCase(); // 'activo' o 'finalizado'
+    }
+
+    if (ordenSeleccionado != 'Por Defecto') {
+      filtros['orden'] =
+          ordenSeleccionado == 'Recientes'
+              ? '-fecha'
+              : ordenSeleccionado == 'A-Z'
+              ? 'nombre'
+              : 'calificacion';
+    }
+
+    widget.onFiltrar(filtros);
   }
 }
