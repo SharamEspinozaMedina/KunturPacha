@@ -329,3 +329,11 @@ class IdiomasEtnia(models.Model):
 
     class Meta:
         unique_together = ('id_etnia', 'id_idioma')
+
+class ActividadCronograma(models.Model):
+    id_cronograma = models.ForeignKey(Cronograma, on_delete=models.CASCADE)
+    actividad = models.CharField(max_length=255)
+    descripcion = models.TextField()
+
+    def __str__(self):
+        return self.actividad

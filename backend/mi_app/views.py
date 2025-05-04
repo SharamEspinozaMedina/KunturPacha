@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Usuario, Evento
-from .serializers import UsuarioSerializer, EventoSerializer
+from .serializers import EventoDetalleSerializer, UsuarioSerializer, EventoSerializer
 from django.contrib.auth import authenticate
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
@@ -175,4 +175,19 @@ class EventoViewSet(viewsets.ModelViewSet):
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    # En EventoViewSet, agrega este método
+    @action(detail=True, methods=['get'])
+    def detalles(self, request, pk=None):
+        evento = self.get_object()
+        
+        # Obtener todos los datos relacionados
+        evento.participantes = evento.eventoparticipante_set.all().select_related('id_participante')
+        evento.patrocinadores = evento.eventopatrocinador_set.all().select_related('id_patrocinador')
+        evento.recursos = evento.eventorecurso_set.all().select_related('id_recurso')
+        evento.cronogramas = evento.cronograma_set.all().prefetch_related('actividadcronograma_set')
+        evento.multimedia = evento.multimediae_set.all().select_related('id')
+        
+        serializer = EventoDetalleSerializer(evento)
         return Response(serializer.data)

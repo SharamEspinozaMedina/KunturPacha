@@ -4,6 +4,28 @@ import 'package:http/http.dart' as http;
 class EventoService {
   static const String baseUrl = 'http://localhost:8000/api';
 
+  static Future<Map<String, dynamic>> obtenerDetallesEvento(
+    int idEvento,
+  ) async {
+    try {
+      final response = await http
+          .get(
+            Uri.parse('$baseUrl/eventos/$idEvento/detalles/'),
+            headers: {'Content-Type': 'application/json'},
+          )
+          .timeout(Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        return json.decode(utf8.decode(response.bodyBytes));
+      } else {
+        throw Exception('Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error en obtenerDetallesEvento: $e');
+      throw Exception('Error al obtener detalles del evento');
+    }
+  }
+
   static Future<List<dynamic>> obtenerEventos() async {
     try {
       final response = await http
