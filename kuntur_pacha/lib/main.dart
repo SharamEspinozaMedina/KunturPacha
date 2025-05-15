@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kuntur_pacha/widgets/custom_appbar.dart';
-import 'package:kuntur_pacha/screens/evento_screen.dart'; // Importa EventosScreen
+import 'package:kuntur_pacha/screens/evento_screen.dart';
+import 'package:kuntur_pacha/widgets/n8n_chat_widget.dart'; // Importa el nuevo widget
 
 void main() {
   runApp(MyApp());
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: PaginaPrincipal(usuario: null), // Ahora el home es PaginaPrincipal
+      home: PaginaPrincipal(usuario: null),
     );
   }
 }
@@ -62,12 +63,10 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
 
   void _onItemTapped(int index) {
     if (index == 0) {
-      // INICIO
       setState(() {
         _selectedIndex = 0;
       });
     } else if (index == 1) {
-      // EVENTO
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -81,7 +80,6 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
         ),
       );
     }
-    // Puedes agregar aquí más navegación para AGENDA, CRUD, etc.
   }
 
   @override
@@ -119,15 +117,33 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
+        shape: CircularNotchedRectangle(),
         child: Padding(
           padding: EdgeInsets.all(10),
-          child: Text(
-            '© 2025 Bicentenario de Bolivia. Todos los derechos reservados.',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 14),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '© 2025 Bicentenario de Bolivia. Todos los derechos reservados.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14),
+              ),
+            ],
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => N8nChatWidget()),
+          );
+        },
+        tooltip: 'Abrir Chat',
+        child: Icon(Icons.chat),
+        backgroundColor: Colors.black,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

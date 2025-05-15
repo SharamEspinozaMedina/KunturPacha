@@ -12,6 +12,7 @@ class InfoEventoScreen extends StatefulWidget {
 }
 
 class _InfoEventoScreenState extends State<InfoEventoScreen> {
+  // ignore: unused_field
   late Future<Map<String, dynamic>> _eventoFuture;
   bool _isLoading = true;
   Map<String, dynamic>? _eventoData;
